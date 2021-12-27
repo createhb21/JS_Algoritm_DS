@@ -1,11 +1,9 @@
 # MULTIPLE POINTERS
 
-<aside>
-💡 Creating **pointers** or values that correspond to an index or position and move towards the beginning, end or middle based on a certain condition
 
+💡 Creating **pointers** or values that correspond to an index or position and move towards the beginning, end or middle based on a certain condition
 **Very** efficient for solving problems with minimal space complexity as well
 
-</aside>
 
 핵심은 인덱스나 위치에 상응하는 포인터나 값을 만든 다음 특정한 조건을 충족시키면, 처음 지점이나 마지막 지점 또는 중간에서 양쪽으로 움직이게 하는 것... 이해가 잘 안가니 예시를 보자.
 
@@ -17,8 +15,7 @@
 
 Write a function called **sumZero** which accepts a **sorted** array of integers. The function should find the **first** pair where the sum is 0. Return an array that includes both valus that sum to zero or undefined if a pair does not exist
 
-![스크린샷 2021-12-27 오후 4.28.13.png](MULTIPLE%20POINTERS%2015edfae5a99b403f81981f8a35b6b04f/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2021-12-27_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4.28.13.png)
-
+<img width="586" alt="스크린샷 2021-12-27 오후 4 28 13" src="https://user-images.githubusercontent.com/80245801/147448953-c8e5dd96-7d6a-4611-8996-4e6c42f305f8.png">
 정렬된 정수로 구성된 배열을 입력하는 sumZero라는 이름의 함수를 만드세요. 
 
 → 이 배열은 순서대로 낮은 것부터 높은 것까지로 정렬되어야 한다.
@@ -31,13 +28,14 @@ Write a function called **sumZero** which accepts a **sorted** array of integers
 
 ---
 
-![스크린샷 2021-12-27 오후 4.31.25.png](MULTIPLE%20POINTERS%2015edfae5a99b403f81981f8a35b6b04f/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2021-12-27_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4.31.25.png)
+<img width="485" alt="스크린샷 2021-12-27 오후 4 31 25" src="https://user-images.githubusercontent.com/80245801/147448990-c25691ab-5d40-4f22-a66e-fc1304f5bba5.png">
+
 
 간단한 답안으로, 중첩된 루프를 가지며 빅오(n제곱)의 시간 복잡도를 가진다.
 
 ---
 
-![스크린샷 2021-12-27 오후 4.40.55.png](MULTIPLE%20POINTERS%2015edfae5a99b403f81981f8a35b6b04f/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2021-12-27_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4.40.55.png)
+<img width="493" alt="스크린샷 2021-12-27 오후 4 40 55" src="https://user-images.githubusercontent.com/80245801/147449045-d1f3168f-8468-4221-b5ed-868e27f08d1e.png">
 
 ```tsx
 function sumZero(arr) {
