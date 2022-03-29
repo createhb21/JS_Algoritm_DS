@@ -1,0 +1,372 @@
+---
+title: Udemy - 단일 연결 리스트
+date: 2022-03-08 01:03:30
+widgets:
+  - type: toc
+    position: left
+sidebar:
+  left:
+    sticky: true
+toc: true
+tags:
+  - 자료구조
+categories:
+  - 알고리즘
+  - Udemy
+---
+
+![](https://user-images.githubusercontent.com/67448481/157070297-cc0445bf-cab1-4461-98f8-26e84a2941bc.png)
+
+## 단일 연결 리스트란?
+
+> 단방향성의 **인덱스가 없는** 배열 형식의 자료구조라고 생각해도 될 것 같다.  
+> 조금 더 정확하게 설명하면, 연결 리스트란 노드와 노드 간의 연결로 이루어진 자료구조다.
+
+이처럼 인덱스가 없기 때문에 리스트 내에서 특정 자료를 찾기 위해서 `list[4]`와 같이 인덱싱을 할 수 없고, 순차적으로 하나씩 이동하거나, 헤드 및 테일 등을 활용해 자료를 탐색해야 한다. (_헤드와 테일에 대해선 아래에서 설명하도록 하겠다_)
+
+### **도대체 그럼 이걸 언제, 그리고 왜 써야되는걸까?**
+
+![배열에서 삽입이 일어나는 과정](https://user-images.githubusercontent.com/67448481/157070283-b2739ebd-cdc0-4317-87d6-6ac40d2ec0a5.png)
+
+> 단일 연결 리스트는 배열에 비해 **삽입과 삭제 측면에서 큰 장점**을 갖는다.
+
+앞서 설명했듯이, 인덱스가 없기 때문에 배열에서처럼 원래의 인덱스를 재할당하며 밀어내거나 당기고 했던 일련의 작업들이 불필요하다. 그냥 탐색을 하고, 해당 위치의 자료를 삭제하거나 삽입하기만 하면 된다!
+
+하지만, 위의 그림에서 확인할 수 있듯, 배열에서는 중간에 요소를 삽입 또는 삭제하고 싶을 때, 기존 값들의 물리적 주소들을 모두 변경해야 한다.
+
+비유를 들어 설명해보자면, 위의 그림(배열)에서 각 의자들은 자신만의 고유한 번호를 갖는다. 따라서 중간에 어떤 의자가 끼어들게 된다면 밀려난 만큼 자신의 주소값들이 일일이 수정되어야 하는 것이다. 3번 의자는 4번 의자로, 4번 의자는 5번 의자로...
+
+하지만, 연결 리스트에서는 노드와 노드의 “연결”만이 중요하기에, 삽입을 할 때 삽입될 위치의 앞뒤 노드만 기억해주면 된다. 즉, `Node.next` 를 통해 각 노드들은 자신의 다음번 노드를 기억하며 연결되어 있기 때문에 `next`를 통한 연결만 갈아끼워주면 되는 것이다.
+
+### 단일 연결 리스트에서 활용되는 프로퍼티들
+
+![](https://user-images.githubusercontent.com/67448481/157070287-298fd921-e197-4641-9beb-9fd8825c72bf.png)
+
+> 그러나, 인덱스가 없는 단일 연결 리스트에도 시작점과 끝점이라는 인덱스(?)는 존재한다. 이러한 출발점과 끝점을 `Head`와 `Tail`이라 부른다.
+
+| 프로퍼티  | 설명                           |
+| --------- | ------------------------------ |
+| Head      | 가장 첫 번째 노드              |
+| Tail      | 가장 마지막 노드               |
+| Length    | 리스트의 길이 (총 노드의 개수) |
+| Node      | 노드 (엘리먼트 or 요소)        |
+| Node.next | 자신과 연결된 다음 노드        |
+
+---
+
+## 단일 연결 리스트의 활용
+
+> `Array`에서와 동일하게, 단일 연결 리스트에서의 `push`, `pop`, `shift`, `unshift`, `insert`, `remove` 등을 구현해보도록 하겠다.
+
+### 공통
+
+> 아래 코드 작성 시에 공통적으로 필요한 클래스다.
+
+```jsx
+// 노드 생성을 위한 Class
+
+class Node {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
+}
+
+// 리스트 생성 및 연결을 위한 Class
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+}
+```
+
+### push
+
+> 연결 링크 맨 끝에 요소를 삽입한다.
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  push(val) {
+    // Node 클래스를 활용해서 새로운 노드 인스턴스를 만든다.
+    const node = new Node(val);
+    // 헤드가 없다는 것은 리스트가 비어있다는 것이다.
+    if (!this.head) {
+      this.head = node;
+      this.tail = node;
+    } else {
+      // 기존 테일의 next로 node를 연결해준다.
+      this.tail.next = node;
+      // 그리고 그 node를 이제 tail로 삼는다.
+      this.tail = node;
+    }
+    // 길이는 push에서 언제든 늘어난다!
+    this.length++;
+    return this;
+  }
+}
+```
+
+### pop
+
+> 연결 리스트의 가장 마지막 노드를 제거해주면 된다. (push 보단 로직이 조금 복잡하다)
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  pop() {
+    // 마찬가지로, 헤드가 없으면 리스트가 비어있는 것이다.
+    if (!this.head) return null;
+    // 현재 노드와 이전 노드를 두 변수에 각각 담아줘야 한다.
+    let currentNode = this.head;
+    let prevNode = null;
+    // while문을 사용해서 node.next가 null인(next가 null이면 tail) 노드를 찾는다.
+    while (currentNode.next) {
+      prevNode = currentNode;
+      currentNode = currentNode.next;
+    }
+    prevNode.next = null;
+    this.tail = prevNode;
+    this.length--;
+    // length--를 하고 나서의 length가 0이라면, 리스트가 이제 비었다는 것이다.
+    if (this.length === 0) {
+      // 따라서 head와 tail을 null로 줘야 한다.
+      this.head = null;
+      this.tail = null;
+    }
+    return this;
+  }
+}
+```
+
+### shift
+
+> 제일 앞에 있는 노드(head)를 제거해주면 된다.
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  shift() {
+    if (!this.head) return null;
+    // currentHead로 헤드를 깊은 복사 해준다.
+    const currentHead = this.head;
+    // 현재의 헤드를 기존 헤드의 next로 변경한다.
+    this.head = currentHead.next;
+    this.length--;
+    if (this.length === 0) {
+      this.tail = null;
+    }
+    return this;
+  }
+}
+```
+
+### unshift
+
+> 새로운 노드를 연결 리스트의 맨 앞에 삽입해주면 된다. (head의 변경)
+
+![그림으로 표현해본 단일 연결 리스트에서의 unshift 프로세스](https://user-images.githubusercontent.com/67448481/157070291-cdd08efb-e70e-488f-9e5a-cc1d5a8b2207.png)
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  unshift(val) {
+    const newNode = new Node(val);
+    if (!this.head) {
+      // 이 부분은 위에서 작성했던 push와 동일하다
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      // 1. 만약 헤드가 존재한다면, 해당 헤드를 newNode의 next에 넣어주고,
+      newNode.next = this.head;
+      // 2. 헤드를 newNode로 지정해준다.
+      this.head = newNode;
+    }
+    this.length++;
+    return this;
+  }
+}
+```
+
+### get
+
+> 입력한 인덱스(순번)에 해당하는 node를 리스트에서 찾아준다.
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  get(index) {
+    // 0보다 작거나, 리스트의 범위를 넘어서는 노드는 찾을 수 없다.
+    if (index < 0 || index >= this.length) return null;
+    let count = 0;
+    let currentNode = this.head;
+    // count === index가 될 때 까지 노드를 탐색한다.
+    while (count !== index) {
+      // currentNode.next를 통해 한 다리 건너의 노드를 계속해서 탐색할 수 있다.
+      currentNode = currentNode.next;
+      count++;
+    }
+    // 인덱스에 해당하는 노드인 currentNode를 반환해준다.
+    return currentNode;
+  }
+}
+```
+
+### set
+
+> 기존 노드의 value를 원하는 값으로 수정해준다.
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  set(index, value) {
+    // 1. 위에서 작성한 get 메소드를 활용하여 찾고자 하는 index에 해당하는 노드를 활용
+    const targetNode = this.get(index);
+    if (targetNode) {
+      // 2. 찾은 노드의 val을 value(수정 원하는 값)로 수정해준다.
+      targetNode.val = value;
+      return true;
+    }
+    return false;
+  }
+}
+```
+
+### insert
+
+> 원하는 위치(index)에 원하는 노드를 삽입해준다.
+
+![insert](https://user-images.githubusercontent.com/67448481/157070269-7f5c10c7-5d97-4b4e-8e09-93fde7033496.gif)
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  insert(index, value) {
+    if (index < 0 || index >= this.length) return false;
+    // 0번째에 insert 하는 것은 unshift와 같다.
+    if (index === 0) return this.unshift(value);
+    // 끝에 insert 하는 것은 push와 같다.
+    if (index === this.length - 1) return this.push(value);
+    // 1. 위의 gif에서 확인할 수 있듯, 타겟노드의 이전 노드와 새로운 노드를 우선 연결시켜주고,
+    // 2. 새로운 노드와 타겟노드를 연결시켜 주면, 새로운 노드가 정확히 원하는 위치에 삽입된다.
+    const prevTarget = this.get(index - 1);
+    const target = prevTarget.next;
+    const newNode = new Node(value);
+    newNode.next = target;
+    prevTarget.next = newNode;
+    this.length++;
+    return true;
+  }
+}
+```
+
+### remove
+
+> 원하는 인덱스의 노드를 삭제해준다.
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  remove(index) {
+    if (index < 0 || index >= this.length) return false;
+    // index가 0이면 shift와 같다 (맨 앞의 노드를 삭제)
+    if (index === 0) return this.shift();
+    // index가 끝이면 pop과 같다 (끝의 노드를 삭제)
+    if (index === this.length - 1) return this.pop();
+    // 1. 타겟 노드의 이전 노드를 찾아준다.
+    const prevTarget = this.get(index - 1);
+    // 2. 그리고 prevTarget을 통해 타겟노드를 찾고,
+    const target = prevTarget.next;
+    // 3. prevTarget.next를 타겟노드의 next로 할당해주며 연결해준다.
+    prevTarget.next = target.next;
+    this.length--;
+    return true;
+  }
+}
+```
+
+### 🔥 심화 : reverse
+
+> 잘 연결되어 있는 노드를 **역순으로** 연결해준다. (실제 사용할 일은 거의 없지만 인터뷰에서 종종 출제된다고 한다)
+
+![](https://user-images.githubusercontent.com/67448481/157070293-d302ca46-d1e3-4584-951f-237ba450e582.png)
+
+```jsx
+class linkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  reverse() {
+    // 깊은 복사를 통해 현재 헤드를 node(시작점, 디폴트)로 설정해준다.
+    let node = this.head;
+    // 그리고 헤드와 테일을 서로 치환한다.
+    this.head = this.tail;
+    this.tail = node;
+    // nextNode와 prevNode를 각각 생성해준다.
+    let nextNode;
+    let prevNode = null;
+    for (let i = 0; i < this.length; i++) {
+      // 다음에 체크할 노드 = 현재 노드의 next
+      nextNode = node.next;
+      // 그리고 현재 노드의 새로운 next = 이전 노드
+      node.next = prevNode;
+      // 다음으로 넘어갈 준비 (현재 노드가 다음 번에는 prevNode가 된다)
+      prevNode = node;
+      // 그리고 node(기준점)은 nextNode가 된다.
+      node = nextNode;
+    }
+  }
+}
+```
+
+---
+
+## 단일 연결 리스트의 Big O
+
+> 단일 연결 리스트의 시간복잡도는 이하와 같다.
+
+| 메소드                    | 시간 복잡도 |
+| ------------------------- | ----------- |
+| push, pop, shift, unshift | O(1)        |
+| insert, remove            | O(n)        |
+| get, set                  | O(n)        |
+
+Array에서의 shift, unshift는 O(n)의 시간복잡도를 갖는다. 따라서 개발을 할 때, **삽입과 삭제가 잦은 경우에는 배열보다는 연결 리스트를 사용하는 것이 더 효율적일 수 있다.**
+
+---
